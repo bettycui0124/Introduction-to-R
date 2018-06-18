@@ -1,0 +1,1 @@
+This homework is used to create an R package that implements functions or simulating rolling a die and then use this package to approximate probability to the famous De Mere's dice problems.

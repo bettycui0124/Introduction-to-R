@@ -1,0 +1,200 @@
+---
+title: "hw01-Betty-Cui.Rmd"
+author: "Betty Cui"
+date: "2/18/2018"
+output: github_document
+---
+
+### Data Dictionary (To build a data dictionary in a separated text file) 
+cd Desktop/stats133  
+mkdir hw01  
+cd hw01  
+mkdir imports-85-dictionary.md  
+
+```{r}
+## Data Import
+column_names <- c("symboling","normalized_losses","make","fuel_type","aspiration","num_of_doors","body_style","drive_wheel", "engine_location", "wheel_base", "length","width","height", "curb_weight", "engine_type", "num_of_cylinders", "engine_size", "fuel_system", "bore", "stroke", "compression_ratio", "horsepower", "peak_rpm", "city_mpg", "highway_mpg", "price")
+
+classes <- c( "real","character","character", "character", "character", "character","character", "character", "character", "real","real","real", "real", "integer", "character", "character", "integer", "character", "real", "real", "real", "integer", "integer", "integer","integer", "integer")
+
+
+library(readr)
+dat <- data.frame(
+  read_csv("./imports-85.data",
+           col_types = cols(symboling = col_double(),
+                            normalized.losses = col_character(), 
+                            make = col_character(), 
+                            fuel_type = col_character(), 
+                            aspiration = col_character(), 
+                            num_of_doors = col_character(), 
+                            body_style = col_character(), 
+                            drive_wheel = col_character(), 
+                            engine_location = col_character(), 
+                            wheel_base = col_double(), 
+                            length = col_double(), 
+                            width = col_double(), 
+                            height = col_double(), 
+                            curb_weight = col_integer(), 
+                            engine_type = col_character(), 
+                            num_of_cylinders = col_character(), 
+                            engine_size = col_integer(), 
+                            fuel_system = col_character(), 
+                            bore = col_double(), 
+                            stroke = col_double(), 
+                            compression_ratio = col_double(), 
+                            horsepower = col_integer(), 
+                            peak_rpm = col_integer(), 
+                            city_mpg = col_integer(), 
+                            highway_mpg = col_integer(), 
+                            price = col_integer())
+           )
+  )
+
+str(dat)
+
+
+dat <- read.csv("imports-85.data",header = FALSE, col.names = column_names, colClasses = classes, na.strings="?",  stringsAsFactors = FALSE)
+str(dat)
+
+
+```
+
+
+### 3 Technical Questions about importing data
+a) The column name is used as column names and the real data values starts from the second line.
+b) Since the header is set to False, the first line(column names) will be considered as data value.
+c) Each data type will be factor.
+d) Because on the first option, we specify the column type which requires more storage. 
+e) It is going to convert to three columns, one column is value, one is variable name, and another one is data(index)
+
+```{r}
+## Colored Historgram of Price
+colors <- c("yellow", "red", "black", "green", "violet", "orange", "blue", "pink", "cyan")
+hist(dat$price, col = colors)
+
+## Boxplot of horsepower in horizontal orientation
+horsepower <- dat$horsepower
+boxplot(horsepower, horizontal = TRUE)
+
+## Barplot of frequencies if body_style in decreasing order
+body_style <- dat$body_style
+body_style <- table(body_style)
+barplot(sort(body_style, decreasing = TRUE))
+colnames <- c("wheel_base", "length", "width", "height", "price")
+turbo1 <- dat[dat$aspiration == 'turbo' , colnames]
+stars(turbo1, key.labels = colnames)
+```
+
+```{r}
+## Summaries
+#a) Mean price of fuel_type gas car
+fuel <- dat$fuel_type
+total <- aggregate(dat$price, by = list(fuel), mean, na.rm = TRUE)
+total
+#b) make of twelve num_of_cylinders 
+make <- dat$make[dat$num_of_cylinders == "twelve"]
+make
+#c) make that has most diesel car
+make1 <- dat$make[dat$fuel_type == "diesel"]
+count_frequency <- sort(table(make1), decreasing = TRUE)
+new_make <- names(count_frequency[1])
+new_make
+
+#d) price of the car with largest hoursepower
+price <- dat$price[dat$horsepower]
+price
+largest_horsepower <- sort(table(price),decreasing = TRUE)
+largest_horsepower
+new_price <- names(largest_horsepower[1])
+new_price
+#e) botthom 10th percentile of city_mpg
+a <- quantile(dat$city_mpg, 0.1, na.rm=TRUE)
+a
+#f) top 10th percentile of highway_mpg
+b <- quantile(dat$highway_mpg, 0.9, na.rm=TRUE)
+b
+#g) median_price of botthom 10th percentile of city_mpg
+c <- median(dat$price[a])
+c
+as.list(dat)
+```
+
+###Technical Questions
+* If to use the name that does not exist, then error and shows column type is NUll.
+* 4 fails because object 'mpg', which is not a string, can not be found
+* Yes, A data.frame is a list of vectors, each with the same length and a list is a type of vector.
+* The whole data appears in the form of lists
+* Use data.frame(abc)
+* Each variable and its values are converted to individual list.
+```{r}
+
+#Correlations of quantitative variables
+quantative_data <- dat[ , c("symboling", "wheel_base", "length","width","height", "curb_weight", "engine_size", "bore", "stroke", "compression_ratio", "horsepower", "peak_rpm", "city_mpg", "highway_mpg", "price")]
+qdat <- na.omit(quantative_data)
+qdat <- cor(qdat)
+head(round(qdat, 2))
+library(corrplot)
+corrplot(qdat, method = "circle")
+corrplot.mixed(qdat, lower = "number", upper = "shade", lower.col = "black", number.cex = 0.7)
+corrplot(qdat, type = "upper", order = "hclust", col = c("black", "white"), bg ="lightblue")
+corrplot(qdat,type = "upper", order = "hclust",tl.col = "black", tl.srt = 45)
+cor.dat <- function(mat,... ){
+  mat <- as.matrix(mat)
+  n <- ncol(mat)
+  p.mat <- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n-1)){
+    for (j in (i+1):n){
+      tmp <- cor.test(mat[,i], mat[, j],... )
+      p.mat[i,j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+p.mat <- cor.dat(qdat)
+head(p.mat[, 1:5])
+corrplot(qdat,type = "upper", order = "hclust", p.mat = p.mat, sig.level = 0.01)
+```
+
+
+```{r}
+#8 Principal Components Analysis
+# 8.1 
+pca_prcomp <- prcomp(qdat, scale.= TRUE)
+pca_prcomp
+eigenvalues <- pca_prcomp$sdev^2
+eigenvalues
+sum(eigenvalues[1:3])/sum(eigenvalues)
+# Linear correlation between eigenvalue and percentage
+```
+8.2) PCA plot of vehicles, and PCA plot of variables
+
+*
+```{r}
+t<-pca_prcomp$x
+plot(t[,1:2])
+abline(h=0, v=0)
+```
+
+*
+```{r}
+rot<-pca_prcomp$rotation
+rot
+plot(rot[,1],rot[,2])
+abline(h=0, v=0)
+```
+
+*
+```{r}
+biplot(pca_prcomp, scale = 0)
+```
+
+*
+```{r}
+##  if the arrow points to the similiar direction (angle less than 90), the correlation coefficient will be positive, otherwise, else if angle ranges in 90-180, the correlation coefficient will be negative.
+```
+
+
+
+

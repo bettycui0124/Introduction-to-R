@@ -1,0 +1,32 @@
+---
+title: "Data-dictionary.md"
+author: "Betty Cui"
+date: "3/4/2018"
+output: github_document
+---
+
+## Data Dictionary of NBA2017 Player Statistics
+
+### Data Dictionary:
+
+**Vector**     |   **Meaning**                                            |  **Unit**
+--------------:|:--------------------------------------------------------:|:------------
+  period | an NBA game is divided in 4 periods of 12 mins each | minutes
+  minutes_remaining | the amount of time in minutes respectively that remained to be played in given period | minutes
+  seconds_remaining | the amount of time in seconds respectively that remained to be played in given period | seconds
+  short_made_flag   | whether a shot is made or missed  | character
+  action_type| basketball moves used by players, either to pass by defenders to gain access to the basket, or to get a clean pass to a teammate to score a two pointer or three pointer   | character
+  shot_type| whether a shot is a 2-point field goal or a 3-point field goal| character
+  shot_distance| distance to the basket(measured in feet)             | number(feet)
+  x | court coordinates measured in inches where a shot occured | number
+  y | court coordinates measured in inches where a shot occured       | number
+  team_name | team name| character
+  game_date | data of the game occured| number
+  season | season of the game| number
+  opponent | opponent team | character
+
+
+
+### Details
+* The data is downloaded from professor Sanchez`s github repository.
+* The link of the data is :[https://github.com/ucb-stat133/stat133-spring-2018/blob/master/data/klay-thompson.csv)

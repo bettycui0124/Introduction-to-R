@@ -1,0 +1,8 @@
+Package: dieroller
+Title: This package is used to simulate rolling a die and calculate the probability of the famous Mere¡¯s die problems.
+Authors@R: Betty Cui
+Description: This package is used to implement functions and simulate rolling a die.
+Depends: R (>= 3.4.3)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true

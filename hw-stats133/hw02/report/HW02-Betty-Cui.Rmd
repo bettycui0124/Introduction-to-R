@@ -1,0 +1,130 @@
+---
+title: "hw02-summary-table-Betty-Cui"
+author: "Betty Cui"
+date: "3/5/2018"
+output: github_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE, fig.path =   '/Users/cj/Desktop/stats133/hw-stats133/hw02/images')
+```
+
+```{r}
+## 5.1 Total Shots by Player
+## table1 is the overall effective shooting percentage by player
+Shot <-sort(c(length(curry$shot_made_flag), length(thompson$shot_made_flag), length(durant$shot_made_flag), length(green$shot_made_flag), length(iguodala$shot_made_flag)), decreasing = TRUE)
+Name <- c("curry", "thompson", "durant", "green", "iguodala")
+table <- data.frame(Name, Shot)
+table <- table[order(-table$Shot), , drop = FALSE]
+table
+
+## 5.2 Effective Shooting Percentage
+Name <- c("curry", "thompson", "durant", "green", "iguodala")
+Total <- sort(c(length(curry$shot_made_flag), length(thompson$shot_made_flag), length(durant$shot_made_flag), length(green$shot_made_flag), length(iguodala$shot_made_flag)), decreasing = TRUE)
+
+Made <- c(table(curry$shot_made_flag)[1], table(thompson$shot_made_flag)[1], table(green$shot_made_flag)[1], table(iguodala$shot_made_flag)[1], table(durant$shot_made_flag)[1])
+
+perc_made <- Made/Total
+table1 <- data.frame(Name, Total, Made, perc_made)
+table1 <- table1[order(-table1$perc_made), , drop = FALSE]
+table1
+
+## table2 is 2pt eefective shooting by player
+Name <- c("curry", "thompson", "durant", "green", "iguodala")
+Total <- sort(c(length(curry$shot_made_flag), length(thompson$shot_made_flag), length(durant$shot_made_flag), length(green$shot_made_flag), length(iguodala$shot_made_flag)), decreasing = TRUE)
+
+library(dplyr)
+Made2pt = c(nrow(filter(curry, shot_type == "2PT Field Goal" & shot_made_flag == "made shot")), nrow(filter(thompson, shot_type == "2PT Field Goal" & shot_made_flag == "made shot")), nrow(filter(green, shot_type == "2PT Field Goal" & shot_made_flag == "made shot")), nrow(filter(durant, shot_type == "2PT Field Goal" & shot_made_flag == "made shot")), nrow(filter(iguodala, shot_type == "2PT Field Goal" & shot_made_flag == "made shot")))
+perc_made <- Made2pt/Total
+table2 <- data.frame(Name, Total, Made2pt, perc_made)
+table2 <- table2[order(-table1$perc_made), , drop = FALSE]
+table2
+
+## table2 is 3pt eefective shooting by player
+Name <- c("curry", "thompson", "durant", "green", "iguodala")
+Total <- sort(c(length(curry$shot_made_flag), length(thompson$shot_made_flag), length(durant$shot_made_flag), length(green$shot_made_flag), length(iguodala$shot_made_flag)), decreasing = TRUE)
+
+library(dplyr)
+Made3pt = c(nrow(filter(curry, shot_type == "3PT Field Goal" & shot_made_flag == "made shot")), nrow(filter(thompson, shot_type == "3PT Field Goal" & shot_made_flag == "made shot")), nrow(filter(green, shot_type == "3PT Field Goal" & shot_made_flag == "made shot")), nrow(filter(durant, shot_type == "3PT Field Goal" & shot_made_flag == "made shot")), nrow(filter(iguodala, shot_type == "3PT Field Goal" & shot_made_flag == "made shot")))
+perc_made <- Made3pt/Total
+table3 <- data.frame(Name, Total, Made3pt, perc_made)
+table3 <- table3[order(-table1$perc_made), , drop = FALSE]
+table3
+```
+
+```{r}
+### Shooting Distance
+## 6.1) dplyr table
+library(ggplot2)
+library(dplyr)
+dis_total = total %>%
+  group_by(shot_distance) %>%
+  count(shot_type) %>%
+  summarise(made = sum(n))
+
+dis_made = total %>%
+  filter(shot_made_flag == 'made shot') %>%
+  group_by(shot_distance) %>%
+  count(shot_type) %>%
+  summarise(made = sum(n))
+
+dis_made
+
+dis_total = total %>%
+  filter(shot_made_flag == 'made shot') %>%
+  group_by(shot_distance) %>%
+  summarise(made = n())
+
+dis_total
+
+dis_total_made <- merge(dis_total, dis_made, all = TRUE, by = "shot_distance")
+dis_total_made[is.na(dis_total_made)] <- 0
+dis_total_made
+
+shot_distance_prop = select(shot_distance, shot_distance, made_shot_prop)
+shot_distance_prop
+## 6.2
+ggplot(data = shot_distance_prop, aes(x = shot_distance, y = made_shot_prop)) + geom_point()
+## What do you observe?
+# In general, distance and made shot probabde shot probability and can shot in shorter distance.
+## Can you guesstimate a distance threshold beyond which the chance of making a successful shot is basically null?
+# 52
+## What distances tend to have a percentage of 50% or more?
+# 20
+```
+
+```{r}
+
+## What do you observe?
+# In general, distance and made shot probability and in inverse ratio relationship, i.e. Longer shot distance, made shot probability is smaller.
+## Can you confirm that the shoter the distance, the more effective the shots?
+#No, because there are still some data shows that made shot probability and can shot in shorter distance.
+## Can you guesstimate a distance threshold beyond which the chance of making a successful shot is basically null?
+# 52
+## What distances tend to have a percentage of 50% or more?
+# 20
+```
+
+```{r}
+## Total number of shots by minutes of occurrence
+library(ggplot2)
+library(dplyr)
+
+total
+total["new"] <- "1"
+total
+
+pic4 = total %>%
+  select(minute, name, new) %>%
+  group_by(minute, name) %>%
+  count(new) %>%
+  select(minute, name, n) %>%
+  group_by(name, minute)
+
+
+pic4 
+p5 <- ggplot(data = pic4, aes(x = minute, y = n)) + facet_wrap(~name) + geom_rect(data = pic4, aes(xmin = 0, xmax = 12, ymin = 0, ymax = 100)) + geom_rect(data = pic4, aes(xmin = 24, xmax = 36, ymin = 0, ymax = 100)) + geom_point() + geom_path(color = "blue") + scale_x_continuous(breaks = c(12, 24, 36, 48)) 
+p5
+
+```
+

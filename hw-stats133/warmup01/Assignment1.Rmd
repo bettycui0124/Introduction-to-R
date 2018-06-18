@@ -1,0 +1,83 @@
+
+phone <- 80
+transportation <- 20
+groceries <- 527
+gym <- 10
+rent <- 1500
+other <- 83
+
+#total expenses
+total = 80 + 20 + 527 + 10 + 1500 + 83
+total 
+
+# semester expenses 
+SemesterExpenses = 5*total
+SemesterExpenses
+
+# year expenses
+yearexpenses = 10*total
+yearexpenses
+
+# my vector expenses
+expenses = c(transportion, phone, gym, groceries, rent, other)
+expenses
+sort.default(expenses)
+barplot(c(sort.default(expenses)),
+        names.arg = c("gym", "transportation", "phone", "groceries", "rent", "other"))
+
+
+# Pythagoras formula
+a <- 3
+b <- 4
+Pythagoras <- function(a, b){
+  hypotenuse <- sqrt(a^2 + b^2)
+  return(hypotenuse)
+}
+Pythagoras(3, 4)
+
+# Binomial Formula
+number_of_trials <- n
+number_of_success <- k
+probability_of_success <- p
+n <- 5
+k <- 2
+p <- 0.5
+n_choose_k <- function(n,k){
+  answer <- factorial(n)/factorial(k)/factorial(n-k)
+  return(answer)
+}
+n_choose_k(5,2)
+ 
+#probability of getting 2 heads out of 5 tosses
+(factorial(n) / (factorial(n-k) * factorial(k))) * p^k * (1-p)^(n-k)
+
+#probability of getting 2 heads out of 5 tosses
+choose(n, k) * p^k * (1-p)^(n-k)
+
+choose(10, 3) * (1/6)^3 * (5/6)^(10-3)
+dbinom(2, size=5, prob=0.5)
+dbinom(3, size=3, prob=1/6)
+dbinom(3, size=5, prob=0.35)
+dbinom(2, size=5, prob=0.35)
+
+# probability of getting more than 3 heads in 5 tosses
+# with a biased coin of 35% chance of heads
+heads4 <- dbinom(x = 4, size = 5, prob = 0.35)
+heads5 <- dbinom(x = 5, size = 5, prob = 0.35)
+heads4 + heads5
+
+install.packages("stringr")
+install.packages("RColorBrewer")
+install.packages("XML", "knitr")
+library(knitr)
+
+x = 2;
+3*x^2 + 4 * x + 8
+x <- -3:3;
+
+x <- -3:3
+(3 * x^2) + (4 * x) + 8
+
+help("+")
+?"^"
+
