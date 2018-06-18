@@ -1,0 +1,247 @@
+---
+title: "lab09-Betty-Cui"
+author: "Betty Cui"
+date: "3/21/2018"
+output: html_document
+---
+```{r}
+x <- c(1,2,3,4,5)
+y <- c(1,2,3,4,NA)
+z <- c(TRUE,FALSE,TRUE)
+w <- letters[1:5]
+stat_range <- function(x) {
+  max(x) - min(x)
+}
+stat_center <- function(x){
+  c(mean(x), median(x))
+}
+stat_center(c(1,2,3,4))
+
+stat_spreads <- function(x){
+  c(stat_range(x), IQR(x), sd(x))
+}
+stat_spreads(c(1,2,3,4))
+```
+
+
+
+```{r}
+source("functions.R")
+context("Test for range value")
+test_that("range works as expected", {
+  x <- c(1, 2, 3, 4, 5)
+  
+  expect_equal(stat_range(x), 4)
+  expect_length(stat_range(x), 1)
+  expect_type(stat_range(x), 'double')
+})
+
+## Write more groups of tests -- test_that to test stat_range() with the rest of 
+## testing vectors y, z, w
+## Test vector y
+context("Test for range value")
+test_that("range works as expected", {
+  y <- c(1, 2, 3, 4, NA)
+  
+  expect_length(stat_range(y), 1)
+  expect_equal(stat_range(y), NA_real_)
+})
+
+## Test vector z
+context("Test for range value")
+test_that("range works as expected", {
+  z <- c(TRUE, FALSE, TRUE)
+
+  expect_length(stat_range(z), 1)
+  expect_type(stat_range(z), 'integer')
+  expect_equal(stat_range(z), 1L)
+})
+
+## Test vector q
+context("Test for range value")
+test_that("range works as expected", {
+  w <- letters[1:5]
+  
+  expect_error(stat_range(w))
+})
+
+
+
+```
+
+```{r}
+head(USArrests)
+states <- rownames(USArrests)
+head(states)
+nchar(states)
+tolower(states)
+toupper(states)
+casefold(states)
+num_chars <- nchar(states)
+char_freqs <- table(num_chars)
+barplot(char_freqs)
+paste("Pumpkin", "Pie")
+paste0('Pumpkin', 'Pie')
+```
+
+```{r}
+paste(states[1:5], num_chars[1:5], sep = " = ")
+paste(states[1:5], collapse = '')
+substr(states, 1, 3)
+substr(states, nchar(states) - 2, nchar(states))
+paste(substr(states, 1, 1), substr(states, nchar(states) - 2, nchar(states)), sep = '')
+states_list <- rep("", max(num_chars)-min(num_chars))
+for (i in 1:length(states)){
+  if (num_chars[i] %% 2 == 0){
+    states[i] <- toupper(states[i])
+  }else{
+    states[i] <- tolower(states[i])
+  }
+}
+
+for (i in min(num_chars):max(num_chars)){
+  states_list[i - min(num_chars) + 1] <- 
+    paste(states[num_chars == i], collapse = ", ")
+}
+states_list
+names(states_list) = c("4-chars", "5-chars", "6-chars", "7-chars", "8-chars", "9-chars",
+                       "10-chars", "11-chars", "12-chars", "13-chars", "14-chars")
+states_list
+```
+
+```{r}
+## Temperature converting
+to_celsius <- function(x = 1) {
+  (x - 32) * (5/9)
+}
+
+to_kelvin <- function(x = 1) {
+  (x + 459.67) * (5/9)
+}
+
+to_reaumur <- function(x = 1) {
+  (x - 32) * (4/9)
+}
+
+to_rankine <- function(x = 1) {
+  x + 459.67
+}
+temp_convert <- function(x = 1, to = "celsius") {
+  to <- tolower(to)
+  switch(to,
+         "celsius" = to_celsius(x),
+         "kelvin" = to_kelvin(x),
+         "reaumur" = to_reaumur(x),
+         "rankine" = to_rankine(x))
+}
+
+temp_convert(30, 'celsius')
+temp_convert(30, 'CELSIUS')
+temp_convert(30, 'Celsius')
+```
+
+```{r}
+## Names of files (create 10 different files)
+num <- 1:10
+num <- as.character(num)
+filename <- paste("file", num, sep = '')
+filename <- paste(filename, "csv", sep = '.')
+filename
+## Rename
+filename <- substr(filename, 5, nchar(filename))
+filename <- paste("dataset", filename, sep = '')
+```
+
+```{r}
+## Use function cat()
+outfile <- "output.txt"
+
+# writing to 'outfile.txt'
+cat("This is the first line", file = outfile)
+# insert new line
+cat("\n", file = outfile, append = TRUE)
+cat("A 2nd line", file = "output.txt", append = TRUE)
+# insert 2 new lines
+cat("\n\n", file = outfile, append = TRUE)
+cat("\nThe quick brown fox jumps over the lazy dog\n",
+    file = outfile, append = TRUE)
+cat("---\n", file = outfile)
+cat("title: \"lab09\"\n", file = outfile, append = TRUE)
+cat("author: \"Betty Cui\"\n", file = outfile, append = TRUE)
+cat("tdate: \"03/21/2018\"\n", file = outfile, append = TRUE)
+cat("output: html_document\n", file = outfile, append = TRUE)
+cat("---\n\n\n", file = outfile, append = TRUE)
+cat("This is the first line", file = outfile, append = TRUE)
+# insert new line
+cat("\n", file = outfile, append = TRUE)
+cat("A 2nd line", file = "output.txt", append = TRUE)
+# insert 2 new lines
+cat("\n\n", file = outfile, append = TRUE)
+cat("\nThe quick brown fox jumps over the lazy dog\n",
+    file = outfile, append = TRUE)
+```
+
+```{r}
+## Plot with valid color
+color <- colors()
+is_color <- function(x){
+  y <- FALSE
+  for(i in 1:657){
+    if(x == color[i]){
+      y <- TRUE
+    }
+  }
+  print(y)
+}
+is_color('yellow')
+is_color('blu')
+is_color('turkuoise')
+colplot <- function(x){
+  if(is_color(x) == FALSE){
+    print(paste("invalid color", x, sep = " "))
+  }else{
+    plot(rnorm(100), col = x, main = paste("Testing color", x, sep = " ")) 
+  }
+}
+colplot('tomato')
+colplot("tomate")
+```
+
+```{r}
+## count vowels
+set.seed(1)
+letrs <- sample(letters, size = 100, replace = TRUE)
+head(letrs)
+
+# count the letters
+countletter <- function(x){
+  for (j in 1:length(x)){
+    c <- 0
+    for (i in 1:100){
+      if (letrs[i] == x[j]){
+        c <- c + 1
+      }
+    }
+    d <- x[j]
+    print(paste(d, c, sep = ": "))
+  }
+}
+countletter(c("a", "e", "i", "o", "u"))
+countletter(c("b", "c", "d", "f", "g", "h", "j", 
+               "k", "l", "m", "n", "p", "q", "r", 
+               "s", "t", "v", "w", "x", "y", "z" ))
+
+count_letters <- function(x){
+  v <- 0
+  c <- 0
+  for (j in 1:length(x)){
+    if (letrs[j] == "a"|letrs[j] == "e"|letrs[j] == "i"|letrs[j] == "o"|letrs[j] == "u"){
+      v <- v + 1
+    }else{
+      c <- c + 1
+    }
+  }
+  print(paste(c("letters", "vowels", "constants"), c(length(x), v, c), sep = ": "))
+}
+count_letters(letrs)
+```

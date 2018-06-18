@@ -1,0 +1,239 @@
+---
+title: "Lab08-Simple-Function"
+author: "Betty Cui"
+date: "3/14/2018"
+output: html_document
+---
+
+
+```{r}
+vec <- c(3,1,4)
+for (j in vec){
+  print(j)
+  print(j * 3)
+}
+```
+
+
+
+```{r}
+vec2 <- c(3, 1, 4)
+vec2 <- rep(0, length(vec))
+for (i in 1:3){
+  vec2[i] = vec[i] * 3
+  print(vec2[i])
+}
+```
+
+
+```{r}
+## Series 1
+n <- 100
+summation <- 0
+
+# Do the summation
+for(i in 0:n){
+  summation <- summation + 0.5 ^ i
+}
+summation
+ # as we can see, when n increases, sum converges to 2
+
+## Series 2
+n <- 1000
+summation <- 0
+
+# Do the summation
+for(i in 0:n){
+  summation <- summation + (1/9) ^ i
+}
+summation
+# As we can see, when n increases, series 2 converges to 1.125
+
+```
+
+```{r}
+## Arithmetic Sequence
+n <- 2
+summation3 <- 0
+
+# Do the summation
+for(i in 1:n){
+  summation3 <- summation3 + 3 + (i - 1) * 3
+}
+summation3
+```
+
+```{r}
+## Geometric sequence
+n <- 5
+summation4 <- 0
+
+# Do the summation
+for(i in 1:n){
+  summation4 <- summation4 + 3 * 2^(i -1)
+}
+summation4
+
+```
+
+
+
+```{r}
+## Sine Approximation
+n <- 10
+summation5 <- 0
+x <- 2
+
+# Calulation the sine function first
+sin(x)
+
+# Do the summation
+for(i in 1:n){
+  summation5 <- summation5 + (-1)^(i+1) * x^(2*i - 1) / factorial(2*i -1)
+}
+summation5
+
+
+```
+
+
+
+```{r}
+## Matrix Loop
+set.seed(123)
+X <- matrix(rnorm(12), nrow = 4, ncol = 3)
+X
+```{r}
+# Creating a empty matrix Y which is the same size as X
+Y <- matrix(NA, nrow = 4, ncol = 3)
+
+# Using the loop to convert the matrix
+for (i in 1:nrow(X)) {
+  for (j in 1:ncol(X)) {
+    if (X[i, j] < 0){
+      Y[i, j] <- X[i, j]^2
+    }else
+    {
+      Y[i, j] <- sqrt(X[i, j])
+    }
+  }
+}
+
+```
+------------------------------------------------------------------------
+
+
+```{r}
+## Average
+average <- function(x){
+  i <- 1
+  summation6 <-  0
+  while (i <= length(x)) {
+  summation6 <- summation6 + x[i]
+  i <- i + 1
+  }
+  print(summation6 / length(x))
+}
+
+x <- 1:100
+average(x)
+```
+
+```{r}
+## Standard Deviation
+stdev <- function(x){
+  i <- 1
+  summation7 <-  0
+  while (i <= length(x)) {
+  summation7 <- summation7 + (x[i] - mean(x))^2
+  i <- i + 1
+  }
+  summation7 <- summation7/(length(x) - 1)
+  print(sqrt(summation7))
+}
+
+x <- 1:100
+stdev(x)
+```
+
+```{r}
+# random distance matrix
+num_letters <- length(LETTERS)
+set.seed(123)
+values <- sample.int(num_letters) 
+distances <- values %*% t(values)
+diag(distances) <- 0
+dimnames(distances) <- list(LETTERS, LETTERS)
+distances[1:5, 1:5]
+```
+
+```{r}
+get_dist <- function(dists, ltrs) {
+  if (!all(ltrs %in% LETTERS)) {
+    stop('Unrecognized character')
+  }
+  sum_dist <- 0
+  for (l in 1:(length(ltrs)-1)) {
+    from <- ltrs[l]
+    to <- ltrs[l+1]
+    sum_dist <- sum_dist + dists[from,to]
+  }
+  sum_dist
+}
+vec <- c('E', 'D', 'A')
+get_dist(distances, vec)
+error <- c('E', 'D', ')')
+
+```
+
+```{r}
+cal <- c('C', 'A', 'L')
+get_dist(distances, cal)
+stats <- c('S', 'T', 'A', 'T', 'S')
+get_dist(distances, stats)
+oski <- c('O', 'S', 'K', 'I')
+get_dist(distances, oski)
+zzz <- rep('Z', 3)
+get_dist(distances, zzz)
+lets <- LETTERS
+get_dist(distances, lets)
+first = c('P', 'I', 'N', 'R', 'U', 'I')
+get_dist(distances, first)
+last = c('Y', 'U')
+get_dist(distances, last)
+
+## Geometric mean
+# Continue the loop as long as x is not finished
+gmean <- function(x){
+  i <- 1
+  product <-  1
+  while (i <= length(x)) {
+  product <- product * x[i]
+  i <- i + 1
+  }
+  product <-  product^(1/length(x))
+  print(product)
+}
+
+x <- 1:50
+gmean(x)
+
+```
+
+```{r}
+strings <- list(
+  cal = cal,
+  stats = stats,
+  oski = oski,
+  zzz=zzz,
+  lets = lets,
+  first = first,
+  last = last
+)
+
+string_dists <- rep(0, length(strings) )
+for (i in 1:length(strings)){
+  string_dists[i] <- get_dist(distances, strings[[i]])
+}
+string_dists
+```

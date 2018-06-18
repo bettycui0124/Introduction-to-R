@@ -1,0 +1,248 @@
+---
+title: "lab12-Betty-Cui"
+author: "Betty Cui"
+date: "4/18/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.path = "lab12-images/")
+library(XML)
+library(xml2)
+library(rvest)
+library(stringr)
+library(magrittr)
+```
+
+```{r}
+### Read Tables in R via "XML" Function
+# Assemble url (so it fits on screen)
+basket <- "https://www.basketball-reference.com"
+gsw <- "/teams/GSW/2017.html"
+gsw_url <- paste0(basket, gsw)
+
+# download HTML file to your working directory
+download.file(gsw_url, 'gsw-roster-2017.html')
+
+# Read GSW Roster html table
+gsw_roster <- readHTMLTable('gsw-roster-2017.html')
+
+gsw_roster <- readHTMLTable('../data/gsw-roster-2017.html')
+gsw_roster
+
+# Assemble url (so it fits on screen)
+basket <- "https://www.basketball-reference.com"
+bos <- "/teams/BOS/2017.html"
+bos_url <- paste0(basket, bos)
+
+# download HTML file to your working directory
+download.file(bos_url, 'bos-roster-2017.html')
+
+# Read BOS Roster html table
+bos_roster <- readHTMLTable('bos-roster-2017.html')
+```
+
+
+
+```{r}
+library(XML)
+library(xml2)
+library(rvest)
+library(magrittr)
+```
+
+```{r}
+# Assemble url (so it fits on screen)
+basket <- "https://www.basketball-reference.com"
+gsw <- "/teams/GSW/2017.html"
+gsw_url <- paste0(basket, gsw)
+
+# download HTML file to your working directory
+download.file(gsw_url, 'gsw-roster-2017.html')
+
+# Read GSW Roster html table
+gsw_roster <- readHTMLTable('gsw-roster-2017.html')
+```
+
+```{r}
+# Assemble url (so it fits on screen)
+basket <- "https://www.basketball-reference.com"
+bos <- "/teams/BOS/2017.html"
+bos_url <- paste0(basket, bos)
+
+# download HTML file to your working directory
+download.file(bos_url, 'bos-roster-2017.html')
+
+# Read BOS Roster html table
+bos_roster <- readHTMLTable('bos-roster-2017.html')
+```
+
+```{r}
+nba_html <- paste0(basket, "/leagues/NBA_2017.html")
+
+xml_doc <- read_html(nba_html)
+
+xml_text <- xml_doc %>% html_text()
+```
+
+```{r}
+# content of h2 nodes
+xml_doc %>%
+  html_nodes("h2") %>%
+  html_text() 
+```
+
+### Your turn
+
+Use html_nodes() and html_text() to extract the values of nodes:
+```{r}
+# content of h1 nodes
+xml_doc %>%
+  html_nodes("h1") %>%
+  html_text()
+
+# content of strong nodes
+xml_doc %>%
+  html_nodes("strong") %>%
+  html_text()
+
+# content of button nodes
+xml_doc %>%
+  html_nodes("button") %>%
+  html_text()
+```
+
+```{r}
+# node with an attribute
+xml_doc %>%
+  html_nodes("p.listhead") %>%
+  html_text()
+```
+
+### XPath
+
+```{r}
+xml_doc %>%
+  html_nodes(xpath = '//p[@class="listhead"]') %>%
+  html_text()
+```
+
+```{r}
+xml_doc %>%
+  html_nodes(xpath = '//ul[@class=""]/li/a') %>%
+  html_text()
+```
+
+### Extracting href attributes
+
+```{r}
+# extracting first table 
+xml_table1 <- xml_doc %>%
+  html_nodes("table") %>%
+  extract(1)
+
+class(xml_table1)
+
+tbl1 <- html_table(xml_table1)
+
+head(tbl1)
+```
+
+
+```{r}
+# extracting second table 
+xml_table2 <- xml_doc %>%
+  html_nodes("table") %>%
+  extract(2)
+```
+
+
+```{r}
+# two html tables
+xml_tables <- xml_doc %>%
+  html_nodes("table") %>%
+  extract(1:2)
+```
+
+```{r}
+# extract names of teams
+xml_tables %>% 
+  html_nodes("a") %>%
+  html_text()
+```
+
+```{r}
+# href attributes
+xml_tables %>% 
+  html_nodes("a") %>%
+  html_attr("href")
+```
+
+### Your turn
+
+```{r}
+href <- xml_tables %>% 
+  html_nodes("a") %>%
+  html_attr("href")
+```
+
+```{r}
+team <- substr(href, 8, 10)
+team
+```
+
+```{r}
+files <- paste0(team, "-roster-2017.csv")
+files
+```
+
+```{r}
+basket <- "https://www.basketball-reference.com/teams/"
+team_url <- paste0(team, "/2017.html")
+team_url <- paste0(basket, team_url)
+team_url
+```
+
+```{r}
+# modify with `hrefs[1]`
+basket <- "https://www.basketball-reference.com"
+gsw <- "/teams/GSW/2017.html"
+gsw_url <- paste0(basket, gsw)
+
+
+# download HTML file to your working directory
+download.file(gsw_url, 'gsw-roster-2017.html')
+
+# Read BOS Roster html table
+gsw_roster <- readHTMLTable('gsw-roster-2017.html')
+```
+
+```{r}
+roster <- rep(0, 5)
+for(i in 1:5){
+  download.file(team_url[i], paste0(tolower(team[i]), "-roster-2017.html"))
+  roster[i] <- readHTMLTable(paste0(tolower(team[i]), "-roster-2017.html"))
+}
+```
+
+```{r}
+for(i in 1:5){
+  write.csv(roster[i], file = files[i])
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,13 @@
+---
+title: "lab09"
+author: "Betty Cui"
+tdate: "03/21/2018"
+output: html_document
+---
+
+
+This is the first line
+A 2nd line
+
+
+The quick brown fox jumps over the lazy dog
